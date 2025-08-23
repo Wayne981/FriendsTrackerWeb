@@ -1,0 +1,792 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Friends Energy Tracker - Track Your Social Vibes</title>
+    <meta name="description" content="Track and analyze your energy levels with friends. Discover who brings positive vibes and who might be draining your energy.">
+    <meta name="keywords" content="friends tracker, energy levels, social relationships, mood tracker">
+    <meta name="author" content="Energy Tracker">
+    
+    <!-- Open Graph for social sharing -->
+    <meta property="og:title" content="Friends Energy Tracker">
+    <meta property="og:description" content="Track your vibes with friends and discover your best relationships">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://yourwebsite.com">
+    
+    <!-- Favicon -->
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>😊</text></svg>">
+    
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Times New Roman', Times, serif;
+            background: linear-gradient(135deg, #f4f6f6 0%, #b1bdc3 50%, #acb9bf 100%);
+            min-height: 100vh;
+            color: #000000;
+            overflow-x: hidden;
+            position: relative;
+        }
+
+        /* Enhanced background with floating orbs */
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: 
+                radial-gradient(circle at 25% 25%, rgba(255, 255, 255, 0.12) 0%, transparent 50%),
+                radial-gradient(circle at 75% 75%, rgba(172, 185, 191, 0.15) 0%, transparent 50%),
+                radial-gradient(circle at 50% 50%, rgba(244, 246, 246, 0.1) 0%, transparent 50%);
+            animation: etherealDrift 20s ease-in-out infinite alternate;
+            pointer-events: none;
+            z-index: -1;
+        }
+
+        @keyframes etherealDrift {
+            0% { transform: translate(-30px, -30px) rotate(0deg) scale(1); }
+            100% { transform: translate(30px, 30px) rotate(3deg) scale(1.1); }
+        }
+
+        /* Website container - wider for desktop */
+        .website-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: rgba(255, 255, 255, 0.4);
+            backdrop-filter: blur(24px);
+            border: 1px solid rgba(177, 189, 195, 0.5);
+            min-height: 100vh;
+            position: relative;
+            box-shadow: 
+                0 20px 60px rgba(172, 185, 191, 0.1),
+                0 0 0 1px rgba(255, 255, 255, 0.2),
+                inset 0 1px 0 rgba(255, 255, 255, 0.6);
+        }
+
+        /* Website Header */
+        .website-header {
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.6), rgba(244, 246, 246, 0.3));
+            backdrop-filter: blur(32px);
+            border-bottom: 1px solid rgba(177, 189, 195, 0.3);
+            color: #000000;
+            padding: 60px 40px 40px;
+            text-align: center;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            box-shadow: 0 8px 40px rgba(172, 185, 191, 0.08);
+        }
+
+        .website-header h1 {
+            font-size: 48px;
+            font-weight: 800;
+            margin-bottom: 16px;
+            color: #000000;
+            letter-spacing: -0.03em;
+            text-shadow: 0 4px 20px rgba(172, 185, 191, 0.2);
+        }
+
+        .website-header .subtitle {
+            font-size: 24px;
+            opacity: 0.85;
+            font-weight: 500;
+            color: #000000;
+            letter-spacing: 0.02em;
+            margin-bottom: 12px;
+        }
+
+        .website-header .description {
+            font-size: 18px;
+            opacity: 0.7;
+            max-width: 600px;
+            margin: 0 auto;
+            line-height: 1.6;
+        }
+
+        /* Main content area */
+        .main-content {
+            display: grid;
+            grid-template-columns: 1fr 2fr;
+            gap: 40px;
+            padding: 40px;
+            align-items: start;
+        }
+
+        /* Tracker section */
+        .tracker-section {
+            position: sticky;
+            top: 200px;
+        }
+
+        .add-friend {
+            background: rgba(255, 255, 255, 0.5);
+            backdrop-filter: blur(24px);
+            border: 1px solid rgba(177, 189, 195, 0.6);
+            border-radius: 28px;
+            padding: 32px 28px;
+            margin-bottom: 32px;
+            box-shadow: 
+                0 20px 50px rgba(172, 185, 191, 0.08),
+                0 0 0 1px rgba(255, 255, 255, 0.3),
+                inset 0 1px 0 rgba(255, 255, 255, 0.7);
+            transition: all 0.5s cubic-bezier(0.23, 1, 0.32, 1);
+        }
+
+        .friend-input {
+            width: 100%;
+            padding: 20px 24px;
+            border: 2px solid rgba(177, 189, 195, 0.4);
+            border-radius: 20px;
+            font-size: 17px;
+            font-weight: 500;
+            background: rgba(255, 255, 255, 0.6);
+            backdrop-filter: blur(16px);
+            transition: all 0.4s cubic-bezier(0.23, 1, 0.32, 1);
+            color: #000000;
+            box-shadow: inset 0 2px 4px rgba(172, 185, 191, 0.06);
+            font-family: 'Times New Roman', Times, serif;
+            margin-bottom: 20px;
+        }
+
+        .friend-input:focus {
+            outline: none;
+            border-color: rgba(172, 185, 191, 0.4);
+            background: rgba(255, 255, 255, 0.8);
+            transform: scale(1.02);
+            box-shadow: 
+                0 0 0 4px rgba(177, 189, 195, 0.2),
+                0 20px 40px rgba(172, 185, 191, 0.1),
+                inset 0 2px 4px rgba(172, 185, 191, 0.06);
+        }
+
+        .energy-selector {
+            display: grid;
+            grid-template-columns: repeat(5, 1fr);
+            gap: 12px;
+            margin-bottom: 24px;
+        }
+
+        .energy-btn {
+            aspect-ratio: 1;
+            border: 2px solid rgba(179, 179, 179, 0.4);
+            border-radius: 20px;
+            background: rgba(255, 255, 255, 0.6);
+            backdrop-filter: blur(16px);
+            cursor: pointer;
+            transition: all 0.4s cubic-bezier(0.23, 1, 0.32, 1);
+            font-size: 24px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .energy-btn:hover:not(.selected) {
+            transform: scale(1.05);
+            border-color: rgba(43, 43, 43, 0.3);
+        }
+
+        .energy-btn.selected {
+            color: #FFFFFF;
+            border-color: transparent;
+            transform: scale(1.1);
+            box-shadow: 0 20px 50px var(--energy-shadow);
+        }
+
+        .energy-btn:nth-child(1) {
+            --energy-shadow: rgba(172, 185, 191, 0.4);
+            background: linear-gradient(135deg, #acb9bf 0%, #b1bdc3 100%);
+        }
+
+        .energy-btn:nth-child(2) {
+            --energy-shadow: rgba(177, 189, 195, 0.4);
+            background: linear-gradient(135deg, #b1bdc3 0%, #f4f6f6 100%);
+        }
+
+        .energy-btn:nth-child(3) {
+            --energy-shadow: rgba(244, 246, 246, 0.4);
+            background: linear-gradient(135deg, #f4f6f6 0%, #ffffff 100%);
+        }
+
+        .energy-btn:nth-child(4) {
+            --energy-shadow: rgba(255, 255, 255, 0.4);
+            background: linear-gradient(135deg, #ffffff 0%, #f4f6f6 100%);
+        }
+
+        .energy-btn:nth-child(5) {
+            --energy-shadow: rgba(172, 185, 191, 0.4);
+            background: linear-gradient(135deg, #acb9bf 0%, #ffffff 100%);
+        }
+
+        .energy-btn.selected {
+            background: var(--selected-bg) !important;
+        }
+
+        .energy-btn:nth-child(1).selected {
+            --selected-bg: linear-gradient(135deg, #acb9bf 0%, #b1bdc3 100%);
+        }
+
+        .energy-btn:nth-child(2).selected {
+            --selected-bg: linear-gradient(135deg, #b1bdc3 0%, #f4f6f6 100%);
+        }
+
+        .energy-btn:nth-child(3).selected {
+            --selected-bg: linear-gradient(135deg, #f4f6f6 0%, #ffffff 100%);
+        }
+
+        .energy-btn:nth-child(4).selected {
+            --selected-bg: linear-gradient(135deg, #ffffff 0%, #f4f6f6 100%);
+        }
+
+        .energy-btn:nth-child(5).selected {
+            --selected-bg: linear-gradient(135deg, #acb9bf 0%, #ffffff 100%);
+        }
+
+        .add-btn {
+            width: 100%;
+            padding: 22px 28px;
+            background: linear-gradient(135deg, #acb9bf 0%, #b1bdc3 100%);
+            color: #ffffff;
+            border: none;
+            border-radius: 20px;
+            font-size: 17px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.4s cubic-bezier(0.23, 1, 0.32, 1);
+            font-family: 'Times New Roman', Times, serif;
+        }
+
+        .add-btn:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 24px 60px rgba(172, 185, 191, 0.4);
+        }
+
+        /* Results section */
+        .results-section {
+            min-height: 500px;
+        }
+
+        .analysis-section {
+            background: rgba(255, 255, 255, 0.5);
+            backdrop-filter: blur(24px);
+            border: 1px solid rgba(177, 189, 195, 0.6);
+            border-radius: 28px;
+            padding: 32px 28px;
+            margin-bottom: 32px;
+            box-shadow: 
+                0 20px 50px rgba(172, 185, 191, 0.08),
+                0 0 0 1px rgba(255, 255, 255, 0.3),
+                inset 0 1px 0 rgba(255, 255, 255, 0.7);
+        }
+
+        .analysis-title {
+            font-size: 24px;
+            font-weight: 800;
+            color: #000000;
+            margin-bottom: 16px;
+            text-align: center;
+            font-family: 'Times New Roman', Times, serif;
+        }
+
+        .analysis-content {
+            font-size: 16px;
+            color: #000000;
+            line-height: 1.6;
+            text-align: center;
+            font-family: 'Times New Roman', Times, serif;
+        }
+
+        .friends-list {
+            display: grid;
+            gap: 24px;
+        }
+
+        .friend-card {
+            background: rgba(255, 255, 255, 0.5);
+            backdrop-filter: blur(24px);
+            border: 1px solid rgba(212, 212, 212, 0.6);
+            border-radius: 28px;
+            padding: 32px 28px;
+            transition: all 0.5s cubic-bezier(0.23, 1, 0.32, 1);
+            box-shadow: 
+                0 20px 50px rgba(43, 43, 43, 0.08),
+                0 0 0 1px rgba(255, 255, 255, 0.3),
+                inset 0 1px 0 rgba(255, 255, 255, 0.7);
+        }
+
+        .friend-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 
+                0 32px 80px rgba(43, 43, 43, 0.15),
+                0 0 0 1px rgba(255, 255, 255, 0.4),
+                inset 0 1px 0 rgba(255, 255, 255, 0.8);
+        }
+
+        .friend-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 24px;
+        }
+
+        .friend-name {
+            font-size: 24px;
+            font-weight: 800;
+            color: #000000;
+        }
+
+        .hangout-count {
+            background: linear-gradient(135deg, #2B2B2B, #B3B3B3);
+            color: #FFFFFF;
+            padding: 12px 20px;
+            border-radius: 50px;
+            font-size: 14px;
+            font-weight: 700;
+            font-family: 'Times New Roman', Times, serif;
+        }
+
+        .delete-btn {
+            background: linear-gradient(135deg, #ff4757, #ff3838);
+            color: white;
+            border: none;
+            border-radius: 12px;
+            padding: 8px 16px;
+            font-size: 12px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-left: 12px;
+            font-family: 'Times New Roman', Times, serif;
+        }
+
+        .delete-btn:hover {
+            transform: scale(1.05);
+            box-shadow: 0 8px 24px rgba(255, 71, 87, 0.3);
+        }
+
+        .energy-history {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 24px;
+            flex-wrap: wrap;
+        }
+
+        .energy-dot {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 16px;
+            transition: all 0.4s cubic-bezier(0.23, 1, 0.32, 1);
+            cursor: pointer;
+            border: 3px solid rgba(177, 189, 195, 0.3);
+            color: #ffffff;
+        }
+
+        .energy-dot:hover {
+            transform: scale(1.2);
+            z-index: 10;
+        }
+
+        .energy-average {
+            text-align: center;
+            font-size: 18px;
+            font-weight: 800;
+            padding: 20px 24px;
+            border-radius: 20px;
+            background: rgba(255, 255, 255, 0.6);
+            backdrop-filter: blur(16px);
+            border: 1px solid rgba(177, 189, 195, 0.4);
+            color: #000000;
+            font-family: 'Times New Roman', Times, serif;
+        }
+
+        .energy-1 { background: linear-gradient(135deg, #acb9bf 0%, #b1bdc3 100%); }
+        .energy-2 { background: linear-gradient(135deg, #b1bdc3 0%, #f4f6f6 100%); }
+        .energy-3 { background: linear-gradient(135deg, #f4f6f6 0%, #ffffff 100%); }
+        .energy-4 { background: linear-gradient(135deg, #ffffff 0%, #f4f6f6 100%); }
+        .energy-5 { background: linear-gradient(135deg, #acb9bf 0%, #ffffff 100%); }
+
+        .empty-state {
+            text-align: center;
+            padding: 80px 24px;
+            color: rgba(0, 0, 0, 0.8);
+        }
+
+        .empty-state h3 {
+            font-size: 28px;
+            font-weight: 800;
+            margin-bottom: 16px;
+            color: #000000;
+        }
+
+        .empty-state p {
+            font-size: 18px;
+            color: rgba(0, 0, 0, 0.7);
+            line-height: 1.7;
+        }
+
+        /* Website Footer */
+        .website-footer {
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.6), rgba(244, 246, 246, 0.3));
+            backdrop-filter: blur(32px);
+            border-top: 1px solid rgba(177, 189, 195, 0.3);
+            padding: 40px;
+            text-align: center;
+            color: rgba(0, 0, 0, 0.7);
+            margin-top: 60px;
+        }
+
+        .stats-display {
+            background: rgba(255, 255, 255, 0.6);
+            backdrop-filter: blur(24px);
+            border: 1px solid rgba(177, 189, 195, 0.4);
+            padding: 20px 32px;
+            border-radius: 50px;
+            color: #000000;
+            font-weight: 700;
+            font-family: 'Times New Roman', Times, serif;
+            display: inline-block;
+            margin-top: 20px;
+        }
+
+        /* Celebration effect */
+        @keyframes celebrate {
+            0% { transform: translate(-50%, -50%) scale(0) rotate(0deg); opacity: 1; }
+            50% { transform: translate(-50%, -50%) scale(2.5) rotate(180deg); opacity: 1; }
+            100% { transform: translate(-50%, -50%) scale(0) rotate(360deg); opacity: 0; }
+        }
+
+        .celebration {
+            position: fixed;
+            font-size: 80px;
+            z-index: 1000;
+            pointer-events: none;
+            left: 50%;
+            top: 50%;
+            transform: translate(-50%, -50%);
+            animation: celebrate 2s cubic-bezier(0.23, 1, 0.32, 1) forwards;
+        }
+
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            25% { transform: translateX(-10px); }
+            75% { transform: translateX(10px); }
+        }
+
+        /* Responsive Design */
+        @media (max-width: 1024px) {
+            .main-content {
+                grid-template-columns: 1fr;
+                gap: 30px;
+            }
+            
+            .tracker-section {
+                position: relative;
+                top: 0;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .website-container {
+                margin: 0;
+                border-radius: 0;
+            }
+            
+            .website-header {
+                padding: 40px 20px 30px;
+            }
+            
+            .website-header h1 {
+                font-size: 36px;
+            }
+            
+            .website-header .subtitle {
+                font-size: 20px;
+            }
+            
+            .main-content {
+                padding: 30px 20px;
+            }
+            
+            .add-friend,
+            .friend-card,
+            .analysis-section {
+                padding: 24px 20px;
+                border-radius: 20px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="website-container">
+        <!-- Enhanced Website Header -->
+        <header class="website-header">
+            <h1>Friends Energy Tracker</h1>
+            <p class="subtitle">Track Your Social Vibes</p>
+            <p class="description">Discover which friends bring you positive energy and which ones might be draining your vibe. Build better relationships with data-driven insights.</p>
+        </header>
+
+        <!-- Main Content -->
+        <div class="main-content">
+            <!-- Tracker Section -->
+            <div class="tracker-section">
+                <div class="add-friend">
+                    <h2 style="font-size: 20px; font-weight: 800; color: #000000; margin-bottom: 20px; font-family: 'Times New Roman', Times, serif;">Log a Hangout</h2>
+                    
+                    <input type="text" id="friendName" class="friend-input" placeholder="Friend's name" maxlength="20">
+
+                    <div class="energy-selector" id="energySelector">
+                        <div class="energy-btn" data-energy="1" title="Drained">😤</div>
+                        <div class="energy-btn" data-energy="2" title="Low">😕</div>
+                        <div class="energy-btn" data-energy="3" title="Neutral">🙂</div>
+                        <div class="energy-btn" data-energy="4" title="Good">😇</div>
+                        <div class="energy-btn" data-energy="5" title="Energized">😁</div>
+                    </div>
+                    
+                    <button class="add-btn" id="addButton">Add Hangout</button>
+                </div>
+
+                <div class="stats-display" id="statsDisplay">
+                    📊 Total hangouts: <span id="totalHangouts">0</span>
+                </div>
+            </div>
+
+            <!-- Results Section -->
+            <div class="results-section">
+                <!-- Analysis Sections -->
+                <div id="bestFriendAnalysis" class="analysis-section" style="display: none;">
+                    <div class="analysis-title">🎯 Who Should You Hangout With Most?</div>
+                    <div class="analysis-content" id="bestFriendContent"></div>
+                </div>
+
+                <div id="dangerAnalysis" class="analysis-section" style="display: none;">
+                    <div class="analysis-title">⚠️ Who Might Be Draining Your Energy</div>
+                    <div class="analysis-content" id="dangerContent"></div>
+                </div>
+
+                <!-- Friends List -->
+                <div id="friendsList" class="friends-list">
+                    <div class="empty-state">
+                        <h3>No friends tracked yet!</h3>
+                        <p>Add your first hangout above to start analyzing your social energy patterns</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Website Footer -->
+        <footer class="website-footer">
+            <p>&copy; 2025 Friends Energy Tracker. Track your vibes, improve your relationships.</p>
+        </footer>
+    </div>
+
+    <script>
+        // Data storage using localStorage (can be replaced with database for website)
+        let friends = JSON.parse(localStorage.getItem('friendsData') || '{}');
+        let selectedEnergy = null;
+
+        // Energy selector
+        document.querySelectorAll('.energy-btn').forEach(btn => {
+            btn.addEventListener('click', () => {
+                document.querySelectorAll('.energy-btn').forEach(b => b.classList.remove('selected'));
+                btn.classList.add('selected');
+                selectedEnergy = parseInt(btn.dataset.energy, 10);
+            });
+        });
+
+        // Add hangout function
+        function addHangout() {
+            const nameInput = document.getElementById('friendName');
+            const name = nameInput.value.trim();
+
+            if (!name || selectedEnergy === null) {
+                const addBtn = document.getElementById('addButton');
+                addBtn.style.animation = 'shake 0.5s ease-in-out';
+                setTimeout(() => addBtn.style.animation = '', 500);
+                return;
+            }
+
+            if (!friends[name]) {
+                friends[name] = { hangouts: [], energyLevels: [] };
+            }
+
+            friends[name].hangouts.push(new Date().toISOString());
+            friends[name].energyLevels.push(selectedEnergy);
+
+            // Keep only last 50 hangouts
+            if (friends[name].hangouts.length > 50) {
+                friends[name].hangouts = friends[name].hangouts.slice(-50);
+                friends[name].energyLevels = friends[name].energyLevels.slice(-50);
+            }
+
+            localStorage.setItem('friendsData', JSON.stringify(friends));
+
+            // Reset form
+            nameInput.value = '';
+            selectedEnergy = null;
+            document.querySelectorAll('.energy-btn').forEach(b => b.classList.remove('selected'));
+
+            celebrate();
+            renderFriends();
+        }
+
+        // Add button event listener
+        document.getElementById('addButton').addEventListener('click', addHangout);
+
+        // Enter key support
+        document.getElementById('friendName').addEventListener('keydown', (e) => {
+            if (e.key === 'Enter') addHangout();
+        });
+
+        // Delete friend function
+        function deleteFriend(friendName) {
+            if (confirm(`Are you sure you want to delete all data for ${friendName}?`)) {
+                delete friends[friendName];
+                localStorage.setItem('friendsData', JSON.stringify(friends));
+                renderFriends();
+            }
+        }
+
+        // Analysis functions
+        function analyzeWhoToHangoutWith() {
+            const friendEntries = Object.entries(friends);
+            if (friendEntries.length === 0) return '';
+
+            const analysis = friendEntries.map(([name, data]) => {
+                const avgEnergy = data.energyLevels.reduce((a, b) => a + b, 0) / data.energyLevels.length;
+                const frequency = data.hangouts.length;
+                const recentHangouts = data.hangouts.filter(hangout => {
+                    const hangoutDate = new Date(hangout);
+                    const thirtyDaysAgo = new Date();
+                    thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30);
+                    return hangoutDate > thirtyDaysAgo;
+                }).length;
+
+                return { name, avgEnergy, frequency, recentHangouts, score: avgEnergy * 2 + recentHangouts };
+            });
+
+            analysis.sort((a, b) => b.score - a.score);
+            const best = analysis[0];
+
+            return `${best.name} is your best choice! They have an average energy of ${best.avgEnergy.toFixed(1)} and you've had ${best.recentHangouts} recent hangouts. Their positive energy score is ${best.score.toFixed(1)}.`;
+        }
+
+        function analyzeDangerousFriends() {
+            const friendEntries = Object.entries(friends);
+            if (friendEntries.length === 0) return '';
+
+            const dangerousAnalysis = friendEntries.map(([name, data]) => {
+                const avgEnergy = data.energyLevels.reduce((a, b) => a + b, 0) / data.energyLevels.length;
+                const lowEnergyCount = data.energyLevels.filter(energy => energy <= 2).length;
+                const lowEnergyPercentage = (lowEnergyCount / data.energyLevels.length) * 100;
+
+                return { name, avgEnergy, lowEnergyPercentage, frequency: data.hangouts.length };
+            });
+
+            const dangerous = dangerousAnalysis.filter(friend =>
+                friend.avgEnergy < 2.5 && friend.lowEnergyPercentage > 60 && friend.frequency >= 3
+            );
+
+            if (dangerous.length === 0) {
+                return 'Great news! None of your friends show concerning energy patterns. Keep enjoying positive relationships!';
+            }
+
+            dangerous.sort((a, b) => a.avgEnergy - b.avgEnergy);
+            const mostDangerous = dangerous[0];
+
+            return `${mostDangerous.name} might be draining your energy. Their average energy is ${mostDangerous.avgEnergy.toFixed(1)} and ${mostDangerous.lowEnergyPercentage.toFixed(1)}% of your hangouts were low energy. Consider limiting time with them.`;
+        }
+
+        // Render friends list
+        function renderFriends() {
+            const friendsList = document.getElementById('friendsList');
+            const bestFriendAnalysis = document.getElementById('bestFriendAnalysis');
+            const dangerAnalysis = document.getElementById('dangerAnalysis');
+
+            if (Object.keys(friends).length === 0) {
+                friendsList.innerHTML = `
+                    <div class="empty-state">
+                        <h3>No friends tracked yet!</h3>
+                        <p>Add your first hangout above to start analyzing your social energy patterns</p>
+                    </div>
+                `;
+                bestFriendAnalysis.style.display = 'none';
+                dangerAnalysis.style.display = 'none';
+                return;
+            }
+
+            // Show analysis sections
+            bestFriendAnalysis.style.display = 'block';
+            dangerAnalysis.style.display = 'block';
+            document.getElementById('bestFriendContent').textContent = analyzeWhoToHangoutWith();
+            document.getElementById('dangerContent').textContent = analyzeDangerousFriends();
+
+            // Sort friends by most recent hangout
+            const sortedFriends = Object.entries(friends).sort((a, b) => {
+                const lastA = new Date(a[1].hangouts[a[1].hangouts.length - 1] || 0);
+                const lastB = new Date(b[1].hangouts[b[1].hangouts.length - 1] || 0);
+                return lastB - lastA;
+            });
+
+            friendsList.innerHTML = sortedFriends.map(([name, data]) => {
+                const avgEnergy = (data.energyLevels.reduce((a, b) => a + b, 0) / data.energyLevels.length).toFixed(1);
+                const energyEmojis = ['', '😤', '😕', '🙂', '😇', '😁'];
+
+                return `
+                    <div class="friend-card">
+                        <div class="friend-header">
+                            <div class="friend-name">${name.replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))}</div>
+                            <div style="display: flex; align-items: center;">
+                                <div class="hangout-count">${data.hangouts.length} hangouts</div>
+                                <button class="delete-btn" onclick="deleteFriend('${name.replace(/'/g, "\\'")}')">Delete</button>
+                            </div>
+                        </div>
+                        <div class="energy-history">
+                            ${data.energyLevels.slice(-10).map(energy => 
+                                `<div class="energy-dot energy-${energy}" title="Energy level ${energy}">${energyEmojis[energy]}</div>`
+                            ).join('')}
+                        </div>
+                        <div class="energy-average energy-${Math.round(avgEnergy)}">
+                            Average Energy: ${avgEnergy} ${energyEmojis[Math.round(avgEnergy)]}
+                        </div>
+                    </div>
+                `;
+            }).join('');
+
+            // Update stats display
+            const totalHangouts = Object.values(friends).reduce((sum, friend) => sum + friend.hangouts.length, 0);
+            document.getElementById('totalHangouts').textContent = totalHangouts;
+        }
+
+        // Celebration effect
+        function celebrate() {
+            const celebrations = ['🎉', '✨', '🌟', '💫', '🎊'];
+            const emoji = celebrations[Math.floor(Math.random() * celebrations.length)];
+
+            const celebEl = document.createElement('div');
+            celebEl.textContent = emoji;
+            celebEl.className = 'celebration';
+            document.body.appendChild(celebEl);
+            setTimeout(() => celebEl.remove(), 2000);
+        }
+
+        // Initialize app
+        renderFriends();
+
+        // Make deleteFriend globally available
+        window.deleteFriend = deleteFriend;
+    </script>
+</body>
+</html>
