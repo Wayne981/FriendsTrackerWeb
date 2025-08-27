@@ -17,9 +17,90 @@
     <!-- Favicon -->
     <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>😊</text></svg>">
 
+    <!-- Supabase CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <!-- <script src="config.js"></script> -->
+
+    <script>
+        // Inline config instead of external file
+        window.APP_CONFIG = {
+
+            SUPABASE_URL: 'https://rjpoebykjhmphxsczddt.supabase.co', // Replace with your Supabase URL
+            SUPABASE_ANON_KEY: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InJqcG9lYnlramhtcGh4c2N6ZGR0Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTU5NDk5NTMsImV4cCI6MjA3MTUyNTk1M30.rYjqg7NNXToqLQLeNjJxOklXGpJC_y0nxQg5SptA2EQ' // Replace with your Supabase anon key
+        };
+    </script>
+
 <!-- whatever includes in styles it is CSS -->
  <!-- allowed for copy and paste only this part  -->
-<style>
+
+
+ <style>
+
+html { scroll-behavior: smooth; }
+
+/* Top Nav */
+.top-nav {
+  position: sticky;
+  top: 0;
+  z-index: 200; /* above header (which is z-index:100) */
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 12px 20px;
+  background: linear-gradient(135deg, rgba(255,255,255,0.75), rgba(244,246,246,0.45));
+  backdrop-filter: blur(20px);
+  border-bottom: 1px solid rgba(177,189,195,0.35);
+  box-shadow: 0 8px 24px rgba(172,185,191,0.12);
+}
+
+.brand {
+  font-weight: 800;
+  letter-spacing: -0.02em;
+  color: #000;
+}
+
+.nav-links {
+  display: flex;
+  align-items: center;
+  gap: 18px;
+  flex-wrap: wrap;
+}
+
+.nav-link {
+  text-decoration: none;
+  color: rgba(0,0,0,0.8);
+  font-weight: 600;
+  padding: 8px 12px;
+  border-radius: 12px;
+  transition: transform .2s ease, background .2s ease;
+}
+
+.nav-link:hover {
+  background: rgba(255,255,255,0.6);
+  transform: translateY(-1px);
+}
+
+.nav-right {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+/* Re-scope user-info to sit nicely inside the nav (override the fixed pos) */
+.top-nav .user-info {
+  position: static;
+  display: none;      /* stays hidden until .visible is added by your JS */
+  background: rgba(255,255,255,0.6);
+  padding: 8px 14px;
+}
+
+@media (max-width: 768px) {
+  .nav-links { gap: 10px; }
+  .brand { font-size: 14px; }
+}
+
+
         * {
             margin: 0;
             padding: 0;
@@ -57,6 +138,135 @@
             100% { transform: translate(30px, 30px) rotate(3deg) scale(1.1); }
         }
 
+        /* Auth Modal */
+        .auth-modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            backdrop-filter: blur(10px);
+            z-index: 1000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .auth-form {
+            background: rgba(255, 255, 255, 0.9);
+            backdrop-filter: blur(24px);
+            border: 1px solid rgba(177, 189, 195, 0.6);
+            border-radius: 28px;
+            padding: 40px;
+            max-width: 400px;
+            width: 90%;
+            text-align: center;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+        }
+
+        .auth-form h2 {
+            font-size: 28px;
+            font-weight: 800;
+            color: #000000;
+            margin-bottom: 16px;
+            font-family: 'Times New Roman', Times, serif;
+        }
+
+        .auth-subtitle {
+            font-size: 16px;
+            color: rgba(0, 0, 0, 0.7);
+            margin-bottom: 32px;
+            line-height: 1.5;
+            font-family: 'Times New Roman', Times, serif;
+        }
+
+        .google-btn {
+            width: 100%;
+            padding: 18px 24px;
+            background: #fff;
+            color: #333;
+            border: 2px solid #ddd;
+            border-radius: 16px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-family: 'Times New Roman', Times, serif;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+            margin-bottom: 24px;
+        }
+
+        .google-btn:hover {
+            background: #f8f9fa;
+            border-color: #ccc;
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1);
+            transform: translateY(-2px);
+        }
+
+        .google-btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .google-icon {
+            width: 20px;
+            height: 20px;
+            flex-shrink: 0;
+        }
+
+        .auth-features {
+            background: rgba(255, 255, 255, 0.7);
+            border-radius: 16px;
+            padding: 20px;
+            margin-top: 24px;
+        }
+
+        .auth-features h3 {
+            font-size: 16px;
+            font-weight: 700;
+            color: #000000;
+            margin-bottom: 12px;
+            font-family: 'Times New Roman', Times, serif;
+        }
+
+        .auth-features ul {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+            text-align: left;
+        }
+
+        .auth-features li {
+            font-size: 14px;
+            color: rgba(0, 0, 0, 0.8);
+            margin-bottom: 8px;
+            padding-left: 20px;
+            position: relative;
+            font-family: 'Times New Roman', Times, serif;
+        }
+
+        .auth-features li::before {
+            content: '✓';
+            position: absolute;
+            left: 0;
+            color: #4285F4;
+            font-weight: bold;
+        }
+
+        .error-message {
+            color: #ff4757;
+            font-size: 14px;
+            margin-top: 10px;
+            padding: 10px;
+            background: rgba(255, 71, 87, 0.1);
+            border-radius: 8px;
+        }
+
         /* Website container - wider for desktop */
         .website-container {
             max-width: 1200px;
@@ -70,6 +280,41 @@
                 0 20px 60px rgba(172, 185, 191, 0.1),
                 0 0 0 1px rgba(255, 255, 255, 0.2),
                 inset 0 1px 0 rgba(255, 255, 255, 0.6);
+        }
+
+      /* User Info */
+.user-info {
+    display: none; /* Hidden by default */
+    position: fixed;          /* stays pinned to top-right */
+    top: 20px;
+    right: 20px;
+    align-items: center;
+    gap: 16px;
+    background: rgba(255, 255, 255, 0.6);
+    backdrop-filter: blur(16px);
+    padding: 12px 20px;
+    border-radius: 50px;
+    font-size: 14px;
+    color: #000000;
+    z-index: 200;             /* ensures it's above the header */
+    box-shadow: 0 4px 12px rgba(0,0,0,0.1); /* optional polish */
+}
+
+/* When user info should be visible */
+.user-info.visible {
+    display: flex;
+}
+
+
+        .logout-btn {
+            background: linear-gradient(135deg, #ff4757, #ff3838);
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-size: 12px;
+            cursor: pointer;
+            font-family: 'Times New Roman', Times, serif;
         }
 
         /* Website Header */
@@ -271,6 +516,12 @@
             box-shadow: 0 24px 60px rgba(172, 185, 191, 0.4);
         }
 
+        .add-btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+        }
+
         /* Results section */
         .results-section {
             min-height: 500px;
@@ -460,6 +711,7 @@
             font-family: 'Times New Roman', Times, serif;
             display: inline-block;
             margin-top: 20px;
+            text-align: center;
         }
 
         /* Celebration effect */
@@ -485,6 +737,8 @@
             25% { transform: translateX(-10px); }
             75% { transform: translateX(10px); }
         }
+
+        .hidden { display: none; }
 
         /* Responsive Design */
         @media (max-width: 1024px) {
@@ -521,6 +775,14 @@
                 padding: 30px 20px;
             }
             
+            .user-info {
+                position: relative;
+                top: auto;
+                right: auto;
+                margin-bottom: 20px;
+                justify-content: center;
+            }
+            
             .add-friend,
             .friend-card,
             .analysis-section {
@@ -531,12 +793,66 @@
     </style>
 
 
-
     </head>
 
 <!-- all things inside visible content of your webpage -->
     <body>
+        <!-- Authentication modal  -->
+         <div id="authModal" class="auth-modal">
+            <div class="auth-form">
+                <h2>Welcome to Friends Energy Tracker</h2>
+                <p class="auth-subtitle">Track your social vibes and discover which friends bring you the most positive energy</p>
+
+                <div id="authError" class="error-message hidden"></div>
+
+<!-- Google Sign In Button -->
+ <button id="googleSignIn" class="google-btn">
+    <svg class="google-icon" viewBox="0 0 24 24">
+                    <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/>
+                    <path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/>
+                    <path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"/>
+                    <path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/>
+                </svg>
+<span id="googleBtnText">Sign in with Google</span>
+ </button>
+
+ <div class="auth-features">
+    <h3>🌟 What you'll get:</h3>
+    <ul>
+        <li>Track energy levels with friends</li>
+                    <li>Get personalized friendship insights</li>
+                    <li>Sync across all your devices</li>
+                    <li>Secure & private data storage</li>
+    </ul>
+ </div>
+ <!-- Welcomes users to the application
+
+Explains the app's purpose
+
+Provides a Google sign-in option with the recognizable Google logo
+
+Lists benefits of using the application to encourage sign-ups
+
+Includes an error message area for authentication feedback -->
+
+            </div>
+         </div>
     <div class="website-container">
+        <!-- User Info
+         <div class="user-info">
+            <div style="display: flex; align-items: center; gap: 12px;">
+                <img id="userAvatar" src="" alt="User" style="width: 32px; height: 32px; border-radius: 50%; display: none;">
+                <span id="userEmail"></span>
+            </div>
+            <button class="logout-btn">Logout</button>
+         </div> -->
+
+
+
+
+
+
+         
         <!-- Enhanced Website Header -->
         <header class="website-header">
             <h1>Friends Energy Tracker</h1>
@@ -572,12 +888,12 @@
             <!-- Results Section -->
             <div class="results-section">
                 <!-- Analysis Sections -->
-                <div id="bestFriendAnalysis" class="analysis-section" style="display: none;">
+                <div id="bestFriendAnalysis" class="analysis-section hidden">
                     <div class="analysis-title">🎯 Who Should You Hangout With Most?</div>
                     <div class="analysis-content" id="bestFriendContent"></div>
                 </div>
 
-                <div id="dangerAnalysis" class="analysis-section" style="display: none;">
+                <div id="dangerAnalysis" class="analysis-section hidden">
                     <div class="analysis-title">⚠️ Who Might Be Draining Your Energy</div>
                     <div class="analysis-content" id="dangerContent"></div>
                 </div>
@@ -598,26 +914,546 @@
         </footer>
     </div>
 
-
-
-
-
-
-
-
-
-
-
-
 <script>
+    // env files
+
+    // okay here it comes the import of .env file
+// const SUPABASE_URL = window.APP_CONFIG.SUPABASE_URL;
+// const SUPABASE_ANON_KEY = window.APP_CONFIG.SUPABASE_ANON_KEY;
+
+
+
+    // global variables
+let supabaseClient; // will store the supabase client instance for db operations
+let currentUser = null; // tracks the currently authenticated user
+let selectedEnergy = null; // stores the energy level selected by the user
+let isLoading = false; // flag to track if the app is in loading stage
+
+// energy emojis for display 
+const energyEmojis = ['', '😤', '😕', '🙂', '😇', '😁'];
+const celebrations = ['🎉', '✨', '🌟', '💫', '🎊'];
+
+// INITIALIZATION
+// all the code runs only after the html document is parsed and loaded
+document.addEventListener('DOMContentLoaded', async () => {
+    try {
+        // initialize supabase
+        if (!window.supabase) {
+            throw new Error("Supabase library not loaded");
+        }
+
+           // Initialize Supabase
+                supabaseClient = window.supabase.createClient(
+                    window.APP_CONFIG.SUPABASE_URL, 
+                    window.APP_CONFIG.SUPABASE_ANON_KEY
+                );
+
+        // supabaseClient = window.supabase.createClient(SUPABASE_URL , SUPABASE_ANON_KEY);
+
+        // set up event listeners here
+        setupEventListeners();
+
+        // temporary 
+        
+
+        // set up auth listener
+        setupAuthListener();
+
+        // check if user is already logged in 
+        const {data: {user}} = await supabaseClient.auth.getUser();
+        if(user){
+            currentUser = user;
+            showMainApp();
+        }else{
+            showAuthModal();
+        }
+    }catch(error){
+        console.error("App initialization error", error);
+        showError("Failed to initialize app. Please check your supabase configuration");
+    }
+});
+// summary for DOMcontentLoaded: checks if supabase library is available
+// creates supabase client with available url and anonymous key
+// setup event listeners with UI operations
+// sets up authn event listener
+// checks if a user is already logged in and shows appropriate UI
+// handles error gracefully
+
+
+// EVENT LISTENERS SETUP
+
+function setupEventListeners() {
+    // google sign in button
+    const googleSignIn = document.getElementById('googleSignIn');
+    if(googleSignIn){
+        googleSignIn.addEventListener('click', signInWithGoogle);
+    }
+
+// Add logout button listener here (single event delegation)
+    document.addEventListener('click', function(e) {
+        if (e.target.classList.contains('logout-btn')) {
+            logout();
+        }
+    });
+
+    // energy selector buttons
+    document.querySelectorAll('.energy-btn').forEach(btn => {
+        btn.addEventListener('click', () => {
+            document.querySelectorAll('.energy-btn').forEach(b => b.classList.remove('selected'));
+            btn.classList.add('selected');
+            selectedEnergy = parseInt(btn.dataset.energy, 10);
+        });
+    });
+
+    // add hangout button
+    const addButton = document.getElementById('addButton');
+    if(addButton){
+        addButton.addEventListener('click', addHangout);
+    }
+
+// summary for setUpEventlisteners : sets up click handler for google signin
+// adds clickhandlers for energy selection buttons , removes previous selection , highlights new selection
+// sets up handler for a new hangout
+
+
+// enter key support for friend name input
+const friendNameInput = document.getElementById('friendName');
+if(friendNameInput){
+    friendNameInput.addEventListener('keydown', (e) => {
+        if (e.key === 'Enter') addHangout();
+    });
+}
+}
+// allows users to press enter in the friend name input to trigger adding a hangout
+
+
+// overall till now what this does is 
+// initializes a connection to supabase backend services
+// sets up authentication using google Oauth
+// provides UI for users to : a. sign in with google 
+// b. select energy levels usng emoji buttons
+// c. add hangout sessions with friends
+// 4. handles errors
+// 5. keyboad shortcuts for better UX 
+
+
 
 // Data storage 
 // loads previously stored data from 'friendsDate' if not present returns {}
-let friends = JSON.parse(localStorage.getItem('friendsData') || '{}');
-let selectedEnergy = null;
+// let friends = JSON.parse(localStorage.getItem('friendsData') || '{}');
+// let selectedEnergy = null;
 
 // PWA install
 // let deferredPrompt;
+
+ 
+
+
+// setups and autlistener where the state will change when a user tries to signit
+function setupAuthListener() {
+    supabaseClient.auth.onAuthStateChange((event , session) => {
+
+        console.log("Auth State changed:", event);
+        switch(event) {
+            case 'SIGNED_IN':
+                if (session) {
+                    currentUser = session.user;
+                    resetLoadingStates();
+                    showMainApp();
+                }
+                break;
+
+                case 'SIGNED_OUT':
+                    currentUser = null;
+                    showAuthModal();
+                    clearFriendsList();
+                    break;
+
+                    case 'TOKEN_REFRESHED':
+                        if (session) {
+                            currentUser = session.user;
+                        }
+                        break;
+                    }
+                });
+            }
+
+            async function signInWithGoogle(){
+                console.log("google signin clicked");
+
+                if(isLoading){
+                    console.log("Already loading , returning"); // debug log
+                    return;
+                }
+
+                console.log("starting google sign-in process"); // debug log
+                isLoading = true;
+                updateGoogleButton('Signing in...');
+                hideError();
+
+                try {
+                console.log("supabase client:", supabaseClient); // debug log
+
+                    const { error } = await supabaseClient.auth.signInWithOAuth({
+                        provider: 'google',
+                        options: {
+                            redirectTo: window.location.origin
+                        }
+                    });
+
+                    console.log("Oauth response:", {error});
+
+                    if (error) throw error;
+
+                } catch (error) {
+                        console.error("Google sign-in-error", error);
+                        showError("failed to sign in with Google. Please try again.");
+                        resetLoadingStates();
+                }
+            }
+
+                        async function logout(){
+                            console.log("Logout function called!");
+                            if(confirm('Are you sure you want to logout?')){
+                                console.log("User confirmed logout"); // Add this too
+                                try{
+                                    await supabaseClient.auth.signOut();
+
+                                }catch(error){
+                                    console.error('Sign out error:', error);
+                                    showError("failed to sign out. Please try again");
+                                }
+                            }
+                        }
+               
+
+            // summary : handles three different levels 
+            // signed_in  , signed_out , token_refreshed
+            // when a user signs in , the user data is stored , the UI resets , the main app is shown
+            // when a user signs out , the user data is removed , and then tweets are temporarily removed from the UI
+            // when the token is refreshed  , it updates the current user data
+
+
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+// UI management functions 
+
+function showAuthModal() {
+    const authModal = document.getElementById('authModal');
+    const websiteContainer = document.querySelector('.website-container');
+    const userInfo = document.querySelector('.user-info');
+
+    if( authModal) authModal.classList.remove('hidden');
+    if (websiteContainer) websiteContainer.style.display = 'none';
+    if (userInfo) userInfo.classList.remove('visible'); // Hide user info on logout
+}
+
+function hideAuthModal(){
+
+    const authModal = document.getElementById('authModal');
+    const websiteContainer = document.querySelector('.website-container');
+
+    if (authModal) authModal.classList.add('hidden');
+    if (websiteContainer) websiteContainer.style.display = 'block';
+}
+
+function showMainApp() {
+    hideAuthModal();
+    updateUserDisplay();
+    loadFriendsData();
+
+    
+    // Make user info visible
+    const userInfo = document.querySelector('.user-info');
+    if (userInfo) {
+        userInfo.classList.add('visible'); // Use class instead of inline style
+    }
+
+
+    // // Use event delegation for logout button
+    // document.addEventListener('click', function(e) {
+    //     if (e.target.classList.contains('logout-btn')) {
+    //         logout();
+    //     }
+    // });
+}
+
+
+
+function updateUserDisplay() {
+    if (!currentUser) return;
+    const userEmail = document.getElementById('userEmail');
+    const userAvatar = document.getElementById('userAvatar');
+
+    const displayName = currentUser.user_metadata?.full_name || currentUser.email;
+    const avatarUrl = currentUser.user_metadata?.avatar_url;
+
+    if (userEmail) userEmail.textContent = displayName;
+
+    if (userAvatar && avatarUrl){
+        userAvatar.src = avatarUrl;
+        userAvatar.style.display = 'block';
+    }
+}
+
+
+    function showError(message) {
+        const authError = document.getElementById('authError');
+        if (authError) {
+            authError.textContent = message;
+            authError.classList.remove('hidden');
+        }
+    }
+
+    function hideError() {
+        const authError = document.getElementById('authError');
+        if (authError) {
+            authError.classList.add('hidden');
+        }
+    }
+
+    function updateGoogleButton(text) {
+        const googleBtnText = document.getElementById('googleBtnText');
+        const googleSignIn = document.getElementById('googleSignIn');
+
+        if (googleBtnText) googleBtnText.textContent = text;
+        if (googleSignIn) googleSignIn.disabled = isLoading;
+    }
+
+    function resetLoadingStates() {
+        isLoading = false;
+        updateGoogleButton('Sign in with Google');
+    }
+
+    function clearFriendsList() {
+        const friendsList = document.getElementById('friendsList');
+        if (friendsList) {
+            friendsList.innerHTML = `
+            <div class="empty-state">
+                <h3>No friends tracked yet!</h3>
+                <p>Add your first hangout above to start analyzing your social energy patterns </p>
+                </div>
+                `;
+        }
+
+        document.getElementById('bestFriendAnalysis')?.classList.add('hidden');
+        document.getElementById('dangerAnalysis')?.classList.add('hidden');
+
+
+        const totalHangouts = document.getElementById('totalHangouts');
+        if (totalHangouts) totalHangouts.textContent = '0';
+    }
+
+
+///////////////////////////////////////////////////////////////////////////////////////////////////////
+// Database operations
+
+async function addHangout() {
+    if (!currentUser) {
+        showError('Please sign in to add hangouts.');
+        return;
+    }
+
+    const friendNameInput = document.getElementById('friendName');
+    const friendName = friendNameInput ? friendNameInput.value.trim() : '';
+
+
+    if(!friendName || selectedEnergy === null){
+        //little  shake animation if the data is invalid
+        const addBtn = document.getElementById('addButton');
+        if(addBtn){
+        addBtn.style.animation = 'shake 0.5s ease-in-out';
+        setTimeout(() => addBtn.style.animation = '', 500);
+        }
+        return;
+    }
+
+    const addBtn = document.getElementById('addButton');
+    if(addBtn) {
+        addBtn.disabled = true;
+        addBtn.textContent = 'Adding...';
+    }
+
+    try {
+        const {error} = await supabaseClient
+       .from('hangouts')
+        .insert({
+            user_id: currentUser.id,
+            friend_name: friendName,
+            energy_level: selectedEnergy,
+            hangout_date: new Date().toISOString()
+        });
+
+        if(error) throw error;
+
+        // Reset form
+
+        if(friendNameInput) friendNameInput.value = '';
+        selectedEnergy = null;
+        document.querySelectorAll('.energy-btn').forEach(b => b.classList.remove('selected'));
+
+        // celebrae effect
+        celebrate();
+
+        // reload data
+        await loadFriendsData();
+
+    }catch(error){
+            console.error("Error adding hangout", error);
+            showError('Failed to add hangout: ' + error.message);
+            
+        }finally{
+            if(addBtn){
+                addBtn.disabled = false;
+                addBtn.textContent = 'Add Hangout';
+            }
+        }
+    }
+
+    async function deleteFriend(friendName) {
+        if (!currentUser || !confirm(`Are you sure you want to delete all data for ${friendName}?`)) {
+            return;
+        
+    }
+
+    try{
+        const {error} = await supabaseClient
+       .from('hangouts')
+        .delete()
+        .eq('user_id', currentUser.id)
+        .eq('friend_name', friendName);
+
+        if(error) throw error;
+
+        await loadFriendsData();
+
+    }catch(error){
+        console.error("Error deleting friend:", error);
+        showError('Failed to delete friend: ',+ error.message);
+    }
+}
+
+async function loadFriendsData() {
+    if(!currentUser) return;
+
+    try{
+        const {data: hangouts, error } = await supabaseClient
+       .from('hangouts')
+        .select('*')
+        .eq('user_id', currentUser.id)
+        .order('hangout_date', { ascending: false });
+
+        if (error) throw error;
+        
+        const friends = groupHangoutsByFriend(hangouts);
+        renderFriends(friends, hangouts.length);
+    
+    } catch (error) {
+        console.error("Failed to load friends data", error);
+        showError('Failed to load your data. Please refresh the page');
+    }
+    
+}
+
+// DATA PROCESSING FUNCTIONS
+
+function groupHangoutsByFriend(hangouts) {
+    const friends = {};
+
+    hangouts.forEach(hangout => {
+        if(!friends[hangout.friend_name]){
+            friends[hangout.friend_name] = {
+                hangouts: [],
+                energyLevels: []
+            };
+        }
+        friends[hangout.friend_name].hangouts.push(hangout.hangout_date);
+        friends[hangout.friend_name].energyLevels.push(hangout.energy_level);
+
+    });
+
+    return friends;
+}
+
+// Analysis functions 
+    // calculates scores for each friend
+    function analyzeWhoToHangoutWith(friends){
+        const friendEntries = Object.entries(friends);
+        if (friendEntries.length === 0) return '';
+
+        // calculate average energy and frequency for each friend
+        // calculating total hangouts and recent hangouts(within 30 days)
+        // score formula -> avgEnergy * 2 + recentHangouts
+        // return the friend with the highest score
+        const analysis = friendEntries.map(([name , data]) => {
+            const avgEnergy = data.energyLevels.reduce((a,b) => a+b,0)/data.energyLevels.length;
+            const frequency = data.hangouts.length;
+            const recentHangouts = data.hangouts.filter(hangout => {
+                const hangoutDate = new Date(hangout);
+                const thirtyDaysAgo = new Date();
+                thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30);
+                return hangoutDate > thirtyDaysAgo;
+            }).length;
+
+            return{name , avgEnergy , frequency , recentHangouts , score: avgEnergy*2 + recentHangouts};
+
+        });
+    analysis.sort((a,b) => b.score - a.score);
+    const best = analysis[0];
+
+    return `${best.name} is your best choice! They have an average energy of ${best.avgEnergy.toFixed(1)} and you've had ${best.recentHangouts} recent hangouts. Their positive energy score is ${best.score.toFixed(1)}.`;
+    }
+
+    // analyzing friends who might be emotionally draining you
+    // calculating average energy levels and percentage low-energy hangouts
+    // flagging the friends with average energy level< 2.5 , total hangouts more than 3 , >60% low energy hangouts
+    // warning about the most concerning relationship
+    function analyzeDangerousFriends(friends){
+        const friendEntries = Object.entries(friends);
+        if(friendEntries.length === 0) return '';
+
+        // find friends with consistently low energy
+        const dangerousAnalysis = friendEntries.map(([name , data]) => {
+            const avgEnergy = data.energyLevels.reduce((a,b) => a + b,0)/data.energyLevels.length;
+            const lowEnergyCount = data.energyLevels.filter(energy => energy <= 2).length;
+            const lowEnergyPercentage = (lowEnergyCount/data.energyLevels.length) * 100;
+
+            return { name , avgEnergy , lowEnergyPercentage , frequency: data.hangouts.length};
+
+        });
+    
+
+    const dangerous = dangerousAnalysis.filter(friend =>
+        friend.avgEnergy < 2.5 &&
+        friend.lowEnergyPercentage > 60 &&
+         friend.frequency >= 3
+    );
+
+    if(dangerous.length === 0){
+        return 'Great news!  None of your friends show concerning energy patterns.Keep enjoying positive relationships!';
+    }
+
+    dangerous.sort((a,b) => a.avgEnergy - b.avgEnergy);
+    const mostDangerous = dangerous[0];
+
+    return `${mostDangerous.name} might be draining your energy. Their average energy is ${mostDangerous.avgEnergy.toFixed(1)} and ${mostDangerous.lowEnergyPercentage.toFixed(1)} % of your hangouts were low energy . Consider limiting time with them. `;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 // const installPrompt = document.getElementById('installPrompt');
 
 // window.addEventListener('beforeinstallprompt', (e)=>{
@@ -638,60 +1474,48 @@ let selectedEnergy = null;
 // stores the event in deferred prompt
 
 
-////////////////////////////////////
+// ////////////////////////////////////
 
 
-// Energy selector 
-document.querySelectorAll('.energy-btn').forEach(btn => {
-    btn.addEventListener('click', () => {
-        document.querySelectorAll('.energy-btn').forEach(b => b.classList.remove('selected'));
-        btn.classList.add('selected');
-        selectedEnergy = parseInt(btn.dataset.energy, 10);
-    });
-});
-// adds a clickhandler to energy button
-// clears the previous energy , increases the numeric value of the clicked one
-
-// Add hangout function
-function addHangout() {
-    const nameInput = document.getElementById('friendName');
-    const name = nameInput.value.trim();
+// // Energy selector 
+// document.querySelectorAll('.energy-btn').forEach(btn => {
+//     btn.addEventListener('click', () => {
+//         document.querySelectorAll('.energy-btn').forEach(b => b.classList.remove('selected'));
+//         btn.classList.add('selected');
+//         selectedEnergy = parseInt(btn.dataset.energy, 10);
+//     });
+// });
+// // adds a clickhandler to energy button
+// // clears the previous energy , increases the numeric value of the clicked one
 
 
-    if(!name || selectedEnergy === null){
-        //little  shake animation if the data is invalid
-        const addBtn = document.getElementById('addButton');
-        addBtn.style.animation = 'shake 0.5s ease-in-out';
-        setTimeout(() => addBtn.style.animation = '',500);
-        return;
-    }
 
-    if(!friends[name]){
-        friends[name] = {hangouts: [], energyLevels: []};
-    }
+//     if(!friends[name]){
+//         friends[name] = {hangouts: [], energyLevels: []};
+//     }
 
-    friends[name].hangouts.push(new Date().toISOString());
-    friends[name].energyLevels.push(selectedEnergy);
+//     friends[name].hangouts.push(new Date().toISOString());
+//     friends[name].energyLevels.push(selectedEnergy);
 
-    // Keep only last 20 hangouts
-    if(friends[name].hangouts.length > 50){
-        friends[name].hangouts = friends[name].hangouts.slice(-50);
-        friends[name].energyLevels = friends[name].energyLevels.slice(-50);
-    }
+//     // Keep only last 20 hangouts
+//     if(friends[name].hangouts.length > 50){
+//         friends[name].hangouts = friends[name].hangouts.slice(-50);
+//         friends[name].energyLevels = friends[name].energyLevels.slice(-50);
+//     }
 
-    localStorage.setItem('friendsData', JSON.stringify(friends));
+//     localStorage.setItem('friendsData', JSON.stringify(friends));
 
-    // Reset form  [or ] reset UI
-    nameInput.value = '';
-    selectedEnergy = null;
-    document.querySelectorAll('.energy-btn').forEach(b=>b.classList.remove('selected'));
+//     // Reset form  [or ] reset UI
+//     nameInput.value = '';
+//     selectedEnergy = null;
+//     document.querySelectorAll('.energy-btn').forEach(b=>b.classList.remove('selected'));
 
 
-    // celebration effect + rerender in the bottom
-    celebrate();
+//     // celebration effect + rerender in the bottom
+//     celebrate();
     
-    renderFriends();
-}
+//     renderFriends();
+// }
 // validates input (must have name and an energy picked)
 // initialized friend bucket if first time
 // adds a timestamp and energy value
@@ -700,23 +1524,23 @@ function addHangout() {
 ///////////////////////
 
 
-// Add button event listener
-document.getElementById('addButton').addEventListener('click', addHangout);
-// button for add hangout
+// // Add button event listener
+// document.getElementById('addButton').addEventListener('click', addHangout);
+// // button for add hangout
 
-// enter key support
-document.getElementById('friendName').addEventListener('keydown', (e) =>{
-    if(e.key === 'Enter') addHangout();
-});
+// // enter key support
+// document.getElementById('friendName').addEventListener('keydown', (e) =>{
+//     if(e.key === 'Enter') addHangout();
+// });
 
-// Delete friend function
-function deleteFriend(friendName){
-    if(confirm(`Are you sure you want to delete all data for ${friendName}?`)){
-        delete friends[friendName];
-        localStorage.setItem('friendsData', JSON.stringify(friends));
-        renderFriends();
-    }
-}
+// // Delete friend function
+// function deleteFriend(friendName){
+//     if(confirm(`Are you sure you want to delete all data for ${friendName}?`)){
+//         delete friends[friendName];
+//         localStorage.setItem('friendsData', JSON.stringify(friends));
+//         renderFriends();
+//     }
+// }
 // This function removes a friend from the system :
 // shows a confirmation to prevent accidental deletions
 // removes the friend from the friends object and use the delete operator to delete the friend
@@ -724,107 +1548,51 @@ function deleteFriend(friendName){
 // call renderfrined to refresh the UI
 
 
-    // Analysis functions 
-    // calculates scores for each friend
-    function analyzeWhoToHangoutWith(){
-        const friendEntries = Object.entries(friends);
-        if (friendEntries.length === 0) return '';
-
-        // calculate average energy and frequency for each friend
-        // calculating total hangouts and recent hangouts(within 30 days)
-        // score formula -> avgEnergy * 2 + recentHangouts
-        // return the friend with the highest score
-        const analysis = friendEntries.map(([name , data]) => {
-            const avgEnergy = data.energyLevels.reduce((a,b) => a+b,0)/data.energyLevels.length;
-            const frequency = data.hangouts.length;
-            const recentHangouts = data.hangouts.filter(hangout => {
-                const hangoutDate = new Date(hangout);
-                const thirtyDaysAgo = new Date();
-                thirtyDaysAgo.setDate(thirtyDaysAgo.getDate()-30);
-                return hangoutDate > thirtyDaysAgo;
-            }).length;
-
-            return{name , avgEnergy , frequency , recentHangouts , score: avgEnergy*2 + recentHangouts};
-
-        });
-    analysis.sort((a,b) => b.score - a.score);
-    const best = analysis[0];
-
-    return `${best.name} is your best choice! They have an average energy of ${best.avgEnergy.toFixed(1)} and you've had ${best.recentHangouts} recent hangouts. Their positive energy score is ${best.score.toFixed(1)}.`;
-    }
-
-    // analyzing friends who might be emotionally draining you
-    // calculating average energy levels and percentage low-energy hangouts
-    // flagging the friends with average energy level< 2.5 , total hangouts more than 3 , >60% low energy hangouts
-    // warning about the most concerning relationship
-    function analyzeDangerousFriends(){
-        const friendEntries = Object.entries(friends);
-        if(friendEntries.length === 0) return '';
-
-        // find friends with consistently low energy
-        const dangerousAnalysis = friendEntries.map(([name , data]) => {
-            const avgEnergy = data.energyLevels.reduce((a,b) => a + b,0)/data.energyLevels.length;
-            const lowEnergyCount = data.energyLevels.filter(energy => energy <= 2).length;
-            const lowEnergyPercentage = (lowEnergyCount/data.energyLevels.length) * 100;
-
-            return { name , avgEnergy , lowEnergyPercentage , frequency: data.hangouts.length};
-
-        });
     
-
-    const dangerous = dangerousAnalysis.filter(friend =>
-        friend.avgEnergy < 2.5 && friend.lowEnergyPercentage > 60 && friend.frequency >= 3
-    );
-
-    if(dangerous.length === 0){
-        return 'Great news!  None of your friends show concerning energy patterns.Keep enjoying positive relationships!';
-    }
-
-    dangerous.sort((a,b) => a.avgEnergy - b.avgEnergy);
-    const mostDangerous = dangerous[0];
-
-    return `${mostDangerous.name} might be draining your energy. Their average energy is ${mostDangerous.avgEnergy.toFixed(1)} and ${mostDangerous.lowEnergyPercentage.toFixed(1)} % of your hangouts were low energy . Consider limiting time with them. `;
-}
+///////////////////////////////////////////////////////////////////////
+// Rendering functions
 
 // render friends list
-function renderFriends(){
+function renderFriends(friends , totalHangouts){
     const friendsList = document.getElementById('friendsList');
     const bestFriendAnalysis = document.getElementById('bestFriendAnalysis');
     const dangerAnalysis = document.getElementById('dangerAnalysis');
+    const totalHangoutsEl = document.getElementById('totalHangouts');
+
+    //update total hangouts
+    if(totalHangoutsEl) totalHangoutsEl.textContent = totalHangouts;
 
     if(Object.keys(friends).length === 0){
-        friendsList.innerHTML = `
-        <div class="empty-state">
-            <h3>No friends tracked yet!</h3>
-            <p>Add your first hangout above to get started</p>
-            </div>
-            `;
-            document.getElementById('floatingStats').classList.add('hidden');
-            bestFriendAnalysis.classList.add('hidden');
-            dangerAnalysis.classList.add('hidden');
-            return;
-            
-            }
+        clearFriendsList();
+        return;
+    }
 
-            // Show analysis sections when there are friends
-           bestFriendAnalysis.style.display = 'block';
-            dangerAnalysis.style.display = 'block';
-            document.getElementById('bestFriendContent').textContent = analyzeWhoToHangoutWith();
-            document.getElementById('dangerContent').textContent = analyzeDangerousFriends();
+    // show analysis sections 
+    const bestFriendContent = document.getElementById('bestFriendContent');
+    const dangerContent = document.getElementById('dangerContent');
 
-            // sort friends by most recent hangout
-            const sortedFriends = Object.entries(friends).sort((a,b) => {
-                const lastA = new Date(a[1].hangouts[a[1].hangouts.length - 1] || 0);
-                const lastB = new Date(b[1].hangouts[b[1].hangouts.length - 1] || 0);
+    if (bestFriendAnalysis && bestFriendContent) {
+        bestFriendContent.textContent = analyzeWhoToHangoutWith(friends);
+        bestFriendAnalysis.classList.remove('hidden');
+    }
+
+    if (dangerAnalysis && dangerContent) {
+        dangerContent.textContent = analyzeDangerousFriends(friends);
+        dangerAnalysis.classList.remove('hidden');
+    }
+
+            // Sort friends by most recent hangout
+            const sortedFriends = Object.entries(friends).sort((a, b) => {
+                const lastA = new Date(a[1].hangouts[0] || 0);
+                const lastB = new Date(b[1].hangouts[0] || 0);
                 return lastB - lastA;
 
             });
 
+
+            if(friendsList) {
             friendsList.innerHTML = sortedFriends.map(([name, data]) => {
                 const avgEnergy = (data.energyLevels.reduce((a,b) => a+b,0)/data.energyLevels.length).toFixed(1);
-                const energyEmojis = ['', '😤', '😐', '🙂', '😇', '😁'];
-
-
 // sanitized code 
 // UI for delete button in 5 and 7th line
                 return `
@@ -838,7 +1606,7 @@ function renderFriends(){
                         </div>
                         </div>
                         <div class="energy-history">
-                            ${data.energyLevels.slice(-10).map(energy => 
+                            ${data.energyLevels.slice(0, 10).map(energy => 
                             `<div class="energy-dot energy-${energy}" title="Energy level ${energy}">${energyEmojis[energy]}</div>`
                             ).join('')}
                         </div>
@@ -847,36 +1615,49 @@ function renderFriends(){
                             </div>
                             </div>
                             `;
-
                             }).join('');
+                        }
+                    }
 
-
-                    // update floating stats display
-                     const totalHangouts = Object.values(friends).reduce((sum, friend) => sum + friend.hangouts.length, 0);
-            document.getElementById('totalHangouts').textContent = totalHangouts;
-            }
+               
             // empty state : shows the friendly message and hides the floating stats
             // otherwise sorts friends with the most recent hangout
             // for each friend show these : 1.name 2.name 3.last 10 energy entries 4.average energy rounded and labled
 
             ///////////////////////////
+            // UTILITY FUNCTIONS
+        
 
 
             // celebratoin effect
             function celebrate() {
-                const celebrations = ['🎉', '✨', '🌟', '💫', '🎊'];
                 const emoji = celebrations[Math.floor(Math.random() * celebrations.length)];
 
                 const celebEl = document.createElement('div');
-                    celebEl.textContent = emoji;  // safer than innerHTML
+                    celebEl.textContent = emoji; // safer than innerHTML
                     celebEl.className = 'celebration';
                     document.body.appendChild(celebEl);
                     setTimeout(() => celebEl.remove(), 2000);
                 
             }
 
-            // Initialize app
-            renderFriends();
+            function escapeHtml(text , forAttribute = false){
+                const map = {
+                    '&' : '&amp;',
+                    '<' : '&lt;',
+                    '>' : '&gt;',
+                    '"' : '&quot;',
+                    "'" : '&#39;'
+
+                };
+
+                const escaped = text.replace(/[&<>"']/g, (m) => map[m]);
+                return forAttribute ? escaped.replace(/'/g,"\\'"): escaped;
+
+            }
+
+            // // Initialize app
+            // renderFriends();
 
             // service worker registration for offline/PWA features
             // if('serviceWorker' in navigator){
@@ -884,6 +1665,8 @@ function renderFriends(){
             // }
 // Make deleteFriend globally available
         window.deleteFriend = deleteFriend;
+        window.logout = logout;
+
 
 
 

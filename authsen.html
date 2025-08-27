@@ -1,0 +1,265 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Authentication Flow Explanation</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background: linear-gradient(135deg, #1a2a6c, #b21f1f, #fdbb2d);
+            color: #333;
+            min-height: 100vh;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        
+        .container {
+            width: 100%;
+            max-width: 1200px;
+            background-color: rgba(255, 255, 255, 0.95);
+            border-radius: 12px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+            overflow: hidden;
+            margin: 20px 0;
+        }
+        
+        header {
+            background: #4a6fc0;
+            color: white;
+            padding: 20px;
+            text-align: center;
+        }
+        
+        h1 {
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+        }
+        
+        .subtitle {
+            font-size: 1.2rem;
+            opacity: 0.9;
+        }
+        
+        .content {
+            display: flex;
+            flex-wrap: wrap;
+            padding: 20px;
+        }
+        
+        .explanation {
+            flex: 1;
+            min-width: 300px;
+            padding: 20px;
+        }
+        
+        .visualization {
+            flex: 1;
+            min-width: 300px;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        
+        .code-block {
+            background: #2d2d2d;
+            color: #f8f8f2;
+            padding: 15px;
+            border-radius: 5px;
+            margin: 15px 0;
+            overflow-x: auto;
+            font-family: 'Consolas', 'Monaco', monospace;
+        }
+        
+        .flow-diagram {
+            width: 100%;
+            max-width: 400px;
+            background: white;
+            border-radius: 8px;
+            padding: 20px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+        }
+        
+        .flow-step {
+            display: flex;
+            align-items: center;
+            margin: 15px 0;
+            padding: 10px;
+            background: #f8f9fa;
+            border-radius: 6px;
+            border-left: 4px solid #4a6fc0;
+        }
+        
+        .step-number {
+            background: #4a6fc0;
+            color: white;
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 15px;
+            flex-shrink: 0;
+        }
+        
+        .step-content {
+            flex: 1;
+        }
+        
+        .note {
+            background: #fff3cd;
+            padding: 15px;
+            border-left: 4px solid #ffc107;
+            margin: 15px 0;
+            border-radius: 4px;
+        }
+        
+        .function-name {
+            color: #61dafb;
+            font-weight: bold;
+        }
+        
+        .event-name {
+            color: #f8f8f2;
+            background: #6c5ce7;
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-size: 0.9em;
+        }
+        
+        @media (max-width: 768px) {
+            .content {
+                flex-direction: column;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Authentication Flow Explanation</h1>
+            <p class="subtitle">Understanding the Supabase Auth Code</p>
+        </header>
+        
+        <div class="content">
+            <div class="explanation">
+                <h2>Code Explanation</h2>
+                
+                <div class="code-block">
+                    <span class="function-name">function setupAuthListener()</span> {
+                    <br>&nbsp;&nbsp;supabaseClient.auth.onAuthStateChange((event, session) => {
+                    <br>&nbsp;&nbsp;&nbsp;&nbsp;console.log("Auth State changed:", event);
+                    <br>&nbsp;&nbsp;&nbsp;&nbsp;switch(event) {
+                    <br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;case <span class="event-name">'SIGNED_IN'</span>:
+                    <br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if(session) {
+                    <br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;currentUser = session.user;
+                    <br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;resetLoadingStates();
+                    <br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;showMainApp();
+                    <br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}
+                    <br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;break;
+                    <br>
+                    <br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;case <span class="event-name">'SIGNED_OUT'</span>:
+                    <br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;currentUser = null;
+                    <br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;showAuthModal();
+                    <br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;clearFriendsList();
+                    <br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;break;
+                    <br>
+                    <br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;case <span class="event-name">'TOKEN_REFRESHED'</span>:
+                    <br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if(session) {
+                    <br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;currentUser = session.user;
+                    <br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}
+                    <br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;break;
+                    <br>&nbsp;&nbsp;&nbsp;&nbsp;}
+                    <br>&nbsp;&nbsp;});
+                    <br>}
+                </div>
+                
+                <h3>What this code does:</h3>
+                <ul>
+                    <li>Sets up an authentication state listener that triggers when the user's auth state changes</li>
+                    <li>Handles three different events: SIGNED_IN, SIGNED_OUT, and TOKEN_REFRESHED</li>
+                    <li>When a user signs in, it stores the user data, resets UI states, and shows the main app</li>
+                    <li>When a user signs out, it clears user data, shows the auth modal, and clears the friends list</li>
+                    <li>When the token is refreshed, it updates the current user data</li>
+                </ul>
+                
+                <div class="note">
+                    <strong>Note:</strong> The code you provided has some syntax issues (mismatched brackets, misplaced catch block, and incorrect logout function placement).
+                </div>
+            </div>
+            
+            <div class="visualization">
+                <h2>Authentication Flow</h2>
+                
+                <div class="flow-diagram">
+                    <div class="flow-step">
+                        <div class="step-number">1</div>
+                        <div class="step-content">
+                            <strong>User attempts to sign in</strong>
+                            <p>User clicks the Google sign-in button</p>
+                        </div>
+                    </div>
+                    
+                    <div class="flow-step">
+                        <div class="step-number">2</div>
+                        <div class="step-content">
+                            <strong>Google OAuth flow</strong>
+                            <p>User is redirected to Google for authentication</p>
+                        </div>
+                    </div>
+                    
+                    <div class="flow-step">
+                        <div class="step-number">3</div>
+                        <div class="step-content">
+                            <strong>Auth state changes</strong>
+                            <p>Supabase detects the change and triggers the listener</p>
+                        </div>
+                    </div>
+                    
+                    <div class="flow-step">
+                        <div class="step-number">4</div>
+                        <div class="step-content">
+                            <strong>Event handling</strong>
+                            <p>Based on the event type (SIGNED_IN, SIGNED_OUT, etc.), different actions are taken</p>
+                        </div>
+                    </div>
+                    
+                    <div class="flow-step">
+                        <div class="step-number">5</div>
+                        <div class="step-content">
+                            <strong>UI updates</strong>
+                            <p>The application UI is updated based on the auth state</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <h3>Common Events</h3>
+                <ul>
+                    <li><strong>SIGNED_IN</strong>: User successfully authenticates</li>
+                    <li><strong>SIGNED_OUT</strong>: User signs out or session expires</li>
+                    <li><strong>TOKEN_REFRESHED</strong>: Authentication token is renewed</li>
+                    <li><strong>USER_UPDATED</strong>: User details are changed</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // This is just for demonstration purposes
+        // In a real app, you would use the actual Supabase client
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('Auth flow explanation loaded');
+        });
+    </script>
+</body>
+</html>
